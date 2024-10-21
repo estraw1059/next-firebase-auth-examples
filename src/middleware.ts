@@ -1,11 +1,12 @@
-import { NextRequest } from "next/server";
-import { authMiddleware } from "next-firebase-auth-edge";
+import { NextRequest, NextResponse } from "next/server";
+import { authMiddleware, redirectToHome, redirectToLogin } from "next-firebase-auth-edge";
 import { clientConfig, serverConfig } from "@/util/config";
+import { headers } from "next/headers";
+
+const PUBLIC_PATHS = ['/register', '/login'];
 
 export async function middleware(request: NextRequest) {
-  console.log("middleware request");
-  console.log(request);
-  const response =  await authMiddleware(request, {
+  return await authMiddleware(request, {
     loginPath: "/api/login",
     logoutPath: "/api/logout",
     apiKey: clientConfig.apiKey,
@@ -13,11 +14,33 @@ export async function middleware(request: NextRequest) {
     cookieSignatureKeys: serverConfig.cookieSignatureKeys,
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     serviceAccount: serverConfig.serviceAccount,
-    debug: true
+    handleValidToken: async ({token, decodedToken}, headers) => {
+      if (PUBLIC_PATHS.includes(request.nextUrl.pathname)) {
+        return redirectToHome(request);
+      }
+      return NextResponse.next({
+        request: {
+          headers
+        }
+      });
+    },
+    handleInvalidToken: async (reason) => {
+      console.info("Missing or malformed credentials", {reason});
+      
+      return redirectToLogin(request,{
+        path: '/login',
+        publicPaths: PUBLIC_PATHS
+      });
+    },
+    handleError: async (error) => {
+      console.error("An error occurred", {error});
+
+      return redirectToLogin(request, {
+        path: '/login',
+        publicPaths: PUBLIC_PATHS
+      });
+    }
   });
-  console.log("middleware response");
-  console.log(response);
-  return response;
 }
 
 export const config = {
