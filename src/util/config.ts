@@ -6,11 +6,11 @@ export const serverConfig = {
       httpOnly: true,
       secure: process.env.USE_SECURE_COOKIES === "true",
       sameSite: "lax" as const,
-      maxAge: 12 * 60 * 60 * 24,
+      maxAge: 60,
     },
     serviceAccount: {
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-      clientEmail: 'firebase-adminsdk-erb1p@waterdeep-4bf5f.iam.gserviceaccount.com'!,
+      clientEmail: process.env.NEXT_PRIVATE_CLIENT_EMAIL!,
       // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
       privateKey: process.env.NEXT_PRIVATE_FIREBASE_API_KEY?.replace(/\\n/g, "\n")!,
     }
