@@ -3,7 +3,7 @@ export const serverConfig = {
     cookieSignatureKeys: [process.env.AUTH_COOKIE_SIGNATURE_KEY_CURRENT!, process.env.AUTH_COOKIE_SIGNATURE_KEY_PREVIOUS!],
     cookieSerializeOptions: {
       path: "/",
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.USE_SECURE_COOKIES === "true",
       sameSite: "lax" as const,
       maxAge: 60,
