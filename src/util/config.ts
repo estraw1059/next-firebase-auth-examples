@@ -12,7 +12,7 @@ export const serverConfig = {
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
       clientEmail: process.env.NEXT_PRIVATE_CLIENT_EMAIL!,
       // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-      privateKey: process.env.NEXT_PRIVATE_FIREBASE_API_KEY?.replace(/\\n/g, "\n")!,
+      privateKey: process.env.NEXT_PRIVATE_FIREBASE_API_KEY?.replace(/\\n/gm, "\n")!,
     }
   };
   
